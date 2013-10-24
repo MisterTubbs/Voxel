@@ -1,6 +1,7 @@
 package com.nishu.voxel;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -11,6 +12,7 @@ public class Window {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setTitle("Nishu Voxels");
 			Display.create();
+			Mouse.setGrabbed(true);
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}
