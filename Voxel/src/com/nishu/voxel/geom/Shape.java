@@ -24,9 +24,9 @@ public class Shape {
 		glVertex3f(x, y + size, z);
 		glTexCoord2f(1, 0);
 		glVertex3f(x + size, y + size, z);
-		glTexCoord2f(0, 1);
-		glVertex3f(x + size, y + size, z + size);
 		glTexCoord2f(1, 1);
+		glVertex3f(x + size, y + size, z + size);
+		glTexCoord2f(0, 1);
 		glVertex3f(x, y + size, z + size);
 		
 		//front face
@@ -42,23 +42,35 @@ public class Shape {
 
 		//back face
 		//glColor3f(1, 0, 1);
+		glTexCoord2f(0, 0);
 		glVertex3f(x, y + size, z + size);
+		glTexCoord2f(1, 0);
 		glVertex3f(x + size, y + size, z + size);
+		glTexCoord2f(1, 1);
 		glVertex3f(x + size, y, z + size);
+		glTexCoord2f(0, 1);
 		glVertex3f(x, y, z + size);
 		
 		//left face
 		//glColor3f(1, 0, 0);
+		glTexCoord2f(0, 0);
 		glVertex3f(x + size, y, z);
+		glTexCoord2f(1, 0);
 		glVertex3f(x + size, y, z + size);
+		glTexCoord2f(1, 1);
 		glVertex3f(x + size, y + size, z + size);
+		glTexCoord2f(0, 1);
 		glVertex3f(x + size, y + size, z);
 
 		//right face
 		//glColor3f(1, 1, 0);
+		glTexCoord2f(0, 0);
 		glVertex3f(x, y, z + size);
+		glTexCoord2f(1, 0);
 		glVertex3f(x, y, z);
+		glTexCoord2f(1, 1);
 		glVertex3f(x, y + size, z);
+		glTexCoord2f(0, 1);
 		glVertex3f(x, y + size, z + size);
 
 		glEnd();

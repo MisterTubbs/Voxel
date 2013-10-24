@@ -7,8 +7,9 @@ public class Tile {
 	Shape shape;
 	Texture texture;
 
-	public Tile(){
+	public Tile(String type){
 		shape = new Shape();
+		texture = Texture.loadTexture(type);
 	}
 	
 	public void render(){

@@ -18,8 +18,7 @@ import static org.lwjgl.util.glu.GLU.gluPerspective;
 import org.lwjgl.opengl.Display;
 
 import com.nishu.voxel.entity.Player;
-import com.nishu.voxel.geom.Shape;
-import com.nishu.voxel.graphics.Texture;
+import com.nishu.voxel.geom.Chunk;
 import com.nishu.voxel.utilities.GameObject;
 
 public class Game implements GameObject {
@@ -27,9 +26,8 @@ public class Game implements GameObject {
 	private Player e;
 	private int width, height;
 	
-	Shape[] cube;
-	Texture tex;
-
+	Chunk c;
+	
 	public Game(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -52,6 +50,8 @@ public class Game implements GameObject {
 	@Override
 	public void init() {
 		e = new Player(0, 0, -10);
+		c = new Chunk(0, 0, 0);
+		c.rebuild();
 	}
 
 	@Override
@@ -63,12 +63,14 @@ public class Game implements GameObject {
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		e.render();
+		
+		c.render();
+		
 		glLoadIdentity();
 	}
 	
 	@Override
 	public void dispose() {
-
 	}
 
 }

@@ -16,8 +16,6 @@ public class Texture {
 	public int width;
 	public int height;
 	
-	public static Texture Grass = Texture.loadTexture("res/grass.png");
-	
 	private Texture(int id, int width, int height) {
 		this.id = id;
 		this.width = width;

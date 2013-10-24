@@ -4,11 +4,12 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Player extends Mob {
 
-	public float yrotrad, xrotrad, mouseDX, mouseDY, mouseX, mouseY, xrot = 0.0f, yrot = 0.0f, zrot = 0.0f, lookSpeed = 0.090f, strafeSpeed = 2f;
+	public float yrotrad, xrotrad, mouseDX, mouseDY, mouseX, mouseY, xrot = 0.0f, yrot = 0.0f, zrot = 0.0f, lookSpeed = 0.090f, strafeSpeed = 0.15f;
 
 	public Player(float x, float y, float z) {
 		super(x, y, z);
@@ -46,12 +47,23 @@ public class Player extends Mob {
 		}
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
-			this.setPosition(new Vector3f(this.getPosition().x, this.getPosition().y -= 10, this.getPosition().z));
+			this.setPosition(new Vector3f(this.getPosition().x, this.getPosition().y -= strafeSpeed, this.getPosition().z));
 		}
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
-			this.setPosition(new Vector3f(this.getPosition().x, this.getPosition().y += 10, this.getPosition().z));
+			this.setPosition(new Vector3f(this.getPosition().x, this.getPosition().y += strafeSpeed, this.getPosition().z));
 		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_F1)){
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_F2)){
+			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+			GL11.glEnable(GL11.GL_CULL_FACE);
+		}
+		
 		
 		mouseX = Mouse.getX();
 		mouseY = 1280 - Mouse.getY();
