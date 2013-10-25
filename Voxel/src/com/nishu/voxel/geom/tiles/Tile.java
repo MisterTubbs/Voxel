@@ -1,15 +1,19 @@
-package com.nishu.voxel.geom;
+package com.nishu.voxel.geom.tiles;
 
+import com.nishu.voxel.geom.Shape;
 import com.nishu.voxel.graphics.Texture;
+import com.nishu.voxel.math.AABB;
 
 public class Tile {
 	
 	Shape shape;
 	Texture texture;
+	AABB box;
 
-	public Tile(String type){
+	public Tile(float x, float y, float z, String type){
 		shape = new Shape();
 		texture = Texture.loadTexture(type);
+		box = new AABB(x, y, z);
 	}
 	
 	public void render(){

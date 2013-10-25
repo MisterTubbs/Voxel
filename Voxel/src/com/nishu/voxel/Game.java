@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
@@ -17,17 +18,16 @@ import static org.lwjgl.util.glu.GLU.gluPerspective;
 
 import org.lwjgl.opengl.Display;
 
-import com.nishu.voxel.entity.Player;
-import com.nishu.voxel.geom.Chunk;
+import com.nishu.voxel.entity.MobManager;
+import com.nishu.voxel.geom.chunks.ChunkManager;
 import com.nishu.voxel.utilities.GameObject;
 
 public class Game implements GameObject {
 
-	private Player e;
 	private int width, height;
-	
-	Chunk c;
-	
+	private MobManager mobManager;
+	private ChunkManager chunkManager;
+
 	public Game(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -49,26 +49,27 @@ public class Game implements GameObject {
 
 	@Override
 	public void init() {
-		e = new Player(0, 0, -10);
-		c = new Chunk(0, 0, 0);
-		c.rebuild();
+		mobManager = new MobManager(0, 0, 0, 0, 0);
+		chunkManager = new ChunkManager(mobManager);
 	}
 
 	@Override
 	public void update() {
-		e.update();
+		mobManager.update();
+		chunkManager.update();
 	}
 
 	@Override
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		e.render();
+		glClearColor(0, 0, 0.5f, 1);
 		
-		c.render();
+		mobManager.render();
+		chunkManager.render();
 		
 		glLoadIdentity();
 	}
-	
+
 	@Override
 	public void dispose() {
 	}

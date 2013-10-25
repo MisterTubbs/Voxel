@@ -13,9 +13,9 @@ public class Shape {
 		glVertex3f(x, y, z + size);
 		glTexCoord2f(1, 0);
 		glVertex3f(x + size, y, z + size);
-		glTexCoord2f(0, 1);
-		glVertex3f(x + size, y, z);
 		glTexCoord2f(1, 1);
+		glVertex3f(x + size, y, z);
+		glTexCoord2f(0, 1);
 		glVertex3f(x, y, z);
 		
 		//top face

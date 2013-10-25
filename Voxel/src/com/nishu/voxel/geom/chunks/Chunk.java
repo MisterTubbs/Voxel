@@ -1,4 +1,4 @@
-package com.nishu.voxel.geom;
+package com.nishu.voxel.geom.chunks;
 
 import static org.lwjgl.opengl.GL11.GL_COMPILE;
 import static org.lwjgl.opengl.GL11.glCallList;
@@ -6,15 +6,12 @@ import static org.lwjgl.opengl.GL11.glEndList;
 import static org.lwjgl.opengl.GL11.glGenLists;
 import static org.lwjgl.opengl.GL11.glNewList;
 
-import java.util.Random;
-
+import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.utilities.GameObject;
 
 public class Chunk implements GameObject {
 
 	private int sx, sy, sz, lx, ly, lz, vertID;
-
-	Random rand;
 
 	private Tile[][][] tiles;
 
@@ -31,22 +28,17 @@ public class Chunk implements GameObject {
 
 	@Override
 	public void init() {
-		rand = new Random();
 		this.tiles = new Tile[lx][ly][lz];
-
 		vertID = glGenLists(1);
+
 		for (int x = sx; x < lx; x++) {
 			for (int y = sy; y < ly; y++) {
 				for (int z = sz; z < lz; z++) {
-					if (rand.nextBoolean()) {
-						tiles[x][y][z] = new Tile("grass.png");
-
-					} else {
-						tiles[x][y][z] = new Tile("grass.jpg");
-					}
+					tiles[x][y][z] = new Tile(x, y, z, "grass.jpg");
 				}
 			}
 		}
+		rebuild();
 	}
 
 	public void rebuild() {
@@ -67,13 +59,7 @@ public class Chunk implements GameObject {
 
 	@Override
 	public void render() {
-		for (int x = sx; x < lx; x++) {
-			for (int y = sy; y < ly; y++) {
-				for (int z = sz; z < lz; z++) {
-					tiles[x][y][z].render();
-				}
-			}
-		}
+		tiles[sx][sy][sz].render();
 		glCallList(vertID);
 	}
 
