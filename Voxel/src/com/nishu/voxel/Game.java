@@ -3,6 +3,9 @@ package com.nishu.voxel;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 
 import com.nishu.voxel.entity.MobManager;
@@ -17,8 +20,6 @@ public class Game implements GameObject {
 	private ChunkManager chunkManager;
 	private Spritesheet spritesheet;
 	
-	private float[] fogColor = {0, 0, 0, 1};
-	
 	public Game(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -26,6 +27,9 @@ public class Game implements GameObject {
 	}
 
 	private void initGL() {
+		FloatBuffer fog = BufferUtils.createFloatBuffer(4);
+		fog.put(0).put(0).put(1).put(1).flip();
+		
 		glViewport(0, 0, Display.getWidth(), Display.getHeight());
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -37,8 +41,13 @@ public class Game implements GameObject {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		
+		glEnable(GL_FOG);
 		glFogi(GL_FOG_MODE, GL_LINEAR);
-		glFog(GL_FOG_COLOR, fogColor);
+		glFog(GL_FOG_COLOR, fog);
+		glFogf(GL_FOG_DENSITY, 0.15f);
+		glHint(GL_FOG_HINT, GL_DONT_CARE);
+		glFogf(GL_FOG_START, 30f);
+		glFogf(GL_FOG_END, 100f);
 	}
 
 	@Override
@@ -57,7 +66,7 @@ public class Game implements GameObject {
 	@Override
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0, 0, 0.5f, 1);
+		glClearColor(0, 0, 1, 1);
 		
 		mobManager.render();
 		chunkManager.render();

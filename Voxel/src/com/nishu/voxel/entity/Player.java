@@ -79,11 +79,13 @@ public class Player extends Mob {
 			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 
-		mouseX = Mouse.getX();
-		mouseY = 1280 - Mouse.getY();
+		if (Mouse.isGrabbed()) {
+			mouseX = Mouse.getX();
+			mouseY = 1280 - Mouse.getY();
 
-		mouseDX = Mouse.getDX();
-		mouseDY = -Mouse.getDY();
+			mouseDX = Mouse.getDX();
+			mouseDY = -Mouse.getDY();
+		}
 
 		this.getRotation().set(this.getRotation().x += (float) mouseDY * lookSpeed, this.getRotation().y += (float) mouseDX * lookSpeed, 0);
 	}
@@ -91,8 +93,8 @@ public class Player extends Mob {
 	public void render() {
 		if (this.getRotation().x < -45)
 			this.getRotation().setX(-45);
-		if (this.getRotation().x > 45)
-			this.getRotation().setX(45);
+		if (this.getRotation().x > 90)
+			this.getRotation().setX(90);
 
 		glRotatef(this.getRotation().x, 1, 0, 0);
 		glRotatef(this.getRotation().y, 0, 1, 0);

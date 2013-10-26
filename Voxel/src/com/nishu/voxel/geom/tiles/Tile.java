@@ -3,27 +3,20 @@ package com.nishu.voxel.geom.tiles;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.nishu.voxel.geom.Shape;
-import com.nishu.voxel.graphics.Sprite;
 import com.nishu.voxel.math.AABB;
 
 public abstract class Tile {
 	
 	Shape shape;
 	AABB box;
-	Sprite sprite;
 	
 	public static final Tile Grass = new TileGrass(); 
 	public static final Tile Void = new TileVoid(); 
 
-	public Tile(Sprite sprite){
+	public Tile(){
 		shape = new Shape();
-		this.sprite = sprite;
 	}
 	
-	public void render(){
-		sprite.bind();
-	}
-
 	public void update() {
 	}
 
@@ -45,6 +38,10 @@ public abstract class Tile {
 	public void setBox(float x, float y, float z){
 		this.box = new AABB(x, y, z);
 		box.update(new Vector3f(x, y, z));
+	}
+	
+	public boolean isTransparent(){
+		return false;
 	}
 	
 	public abstract String getType();

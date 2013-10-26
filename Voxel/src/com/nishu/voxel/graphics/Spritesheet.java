@@ -14,6 +14,8 @@ public class Spritesheet {
 			return 0;
 		case "Grass":
 			return 0.125f;
+		case "Water":
+			return 0.25f;
 		}
 		return 0;		
 	}
@@ -23,6 +25,8 @@ public class Spritesheet {
 		case "Void":
 			return 0;
 		case "Grass":
+			return 0;
+		case "Water":
 			return 0;
 		}
 		return 0;		

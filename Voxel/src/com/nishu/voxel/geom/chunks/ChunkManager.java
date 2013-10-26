@@ -15,7 +15,7 @@ public class ChunkManager implements GameObject {
 
 	@Override
 	public void init() {
-		chunks = new Chunk[175];
+		chunks = new Chunk[1];
 
 		for (int i = 0; i < chunks.length; i++) {
 			chunks[i] = new Chunk(spritesheet, i, i, i);
