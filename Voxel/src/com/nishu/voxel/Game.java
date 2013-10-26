@@ -1,19 +1,6 @@
 package com.nishu.voxel;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_FRONT;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glCullFace;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
 import org.lwjgl.opengl.Display;
@@ -29,7 +16,9 @@ public class Game implements GameObject {
 	private MobManager mobManager;
 	private ChunkManager chunkManager;
 	private Spritesheet spritesheet;
-
+	
+	private float[] fogColor = {0, 0, 0, 1};
+	
 	public Game(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -47,6 +36,9 @@ public class Game implements GameObject {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
+		
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+		glFog(GL_FOG_COLOR, fogColor);
 	}
 
 	@Override

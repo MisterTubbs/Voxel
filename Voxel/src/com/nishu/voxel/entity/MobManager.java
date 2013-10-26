@@ -2,8 +2,6 @@ package com.nishu.voxel.entity;
 
 import java.util.ArrayList;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.utilities.GameObject;
 

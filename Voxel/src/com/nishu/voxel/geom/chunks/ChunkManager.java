@@ -5,7 +5,7 @@ import com.nishu.voxel.utilities.GameObject;
 
 public class ChunkManager implements GameObject {
 
-	private Chunk[][][] chunksPlayer;
+	private Chunk[] chunks;
 	private Spritesheet spritesheet;
 
 	public ChunkManager(Spritesheet spritesheet) {
@@ -15,14 +15,10 @@ public class ChunkManager implements GameObject {
 
 	@Override
 	public void init() {
-		chunksPlayer = new Chunk[6][6][6];
-		
-		for(int x = 0; x < 6; x++){
-			for(int y = 0; y < 6; y++){
-				for(int z = 0; z < 6; z++){
-					chunksPlayer[x][y][z] = new Chunk(spritesheet, x + 16, y, z + 16);
-				}
-			}
+		chunks = new Chunk[175];
+
+		for (int i = 0; i < chunks.length; i++) {
+			chunks[i] = new Chunk(spritesheet, i, i, i);
 		}
 	}
 
@@ -32,12 +28,8 @@ public class ChunkManager implements GameObject {
 
 	@Override
 	public void render() {
-		for(int x = 0; x < 6; x++){
-			for(int y = 0; y < 6; y++){
-				for(int z = 0; z < 6; z++){
-					chunksPlayer[x][y][z].render();
-				}
-			}
+		for (int i = 0; i < chunks.length; i++) {
+			chunks[i].render();
 		}
 	}
 
