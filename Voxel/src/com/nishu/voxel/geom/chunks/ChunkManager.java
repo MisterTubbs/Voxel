@@ -1,36 +1,29 @@
 package com.nishu.voxel.geom.chunks;
 
-import com.nishu.voxel.entity.MobManager;
+import com.nishu.voxel.graphics.Spritesheet;
 import com.nishu.voxel.utilities.GameObject;
 
 public class ChunkManager implements GameObject {
 
 	private Chunk[][][] chunksPlayer;
-	private Chunk c;
-	private MobManager mobManager;
-	private int px, py, pz;
+	private Spritesheet spritesheet;
 
-	public ChunkManager(MobManager mobManager) {
-		this.mobManager = mobManager;
+	public ChunkManager(Spritesheet spritesheet) {
+		this.spritesheet = spritesheet;
 		init();
 	}
 
 	@Override
 	public void init() {
-		px = (int) mobManager.getP().getPosition().x;
-		py = (int) mobManager.getP().getPosition().y;
-		pz = (int) mobManager.getP().getPosition().z;
-
-		//chunksPlayer = new Chunk[px + 32][py + 32][pz + 32];
-		c = new Chunk(px, py, pz);
-
-		/*for (int x = px; x < px + 32; x++) {
-			for (int y = py; y < py + 32; y++) {
-				for (int z = pz; z < pz + 32; z++) {
-					chunksPlayer[x / 16][y / 16][z / 16] = new Chunk(x / 16, y / 16, z / 16);
+		chunksPlayer = new Chunk[6][6][6];
+		
+		for(int x = 0; x < 6; x++){
+			for(int y = 0; y < 6; y++){
+				for(int z = 0; z < 6; z++){
+					chunksPlayer[x][y][z] = new Chunk(spritesheet, x + 16, y, z + 16);
 				}
 			}
-		}*/
+		}
 	}
 
 	@Override
@@ -39,18 +32,16 @@ public class ChunkManager implements GameObject {
 
 	@Override
 	public void render() {
-		c.render();
-		/*for (int x = px; x < px + 32; x++) {
-			for (int y = py; y < py + 32; y++) {
-				for (int z = pz; z < pz + 32; z++) {
-					chunksPlayer[x / 16][y / 16][z / 16].render();
+		for(int x = 0; x < 6; x++){
+			for(int y = 0; y < 6; y++){
+				for(int z = 0; z < 6; z++){
+					chunksPlayer[x][y][z].render();
 				}
 			}
-		}*/
+		}
 	}
 
 	@Override
 	public void dispose() {
 	}
-
 }

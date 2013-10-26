@@ -4,74 +4,76 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Shape {
 	
-	public void createCube(float x, float y, float z, float size){
+	float texSize = 0.125f;
+	
+	public void createCube(float x, float y, float z, float size, float u, float v){
 		glBegin(GL_QUADS);
 		
 		//bottom face
-		//glColor3f(0, 0, 1);
-		glTexCoord2f(0, 0);
+		glTexCoord2f(u, v);
 		glVertex3f(x, y, z + size);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(u + texSize, v);
 		glVertex3f(x + size, y, z + size);
-		glTexCoord2f(1, 1);
+		glTexCoord2f(u + texSize, v + texSize);
 		glVertex3f(x + size, y, z);
-		glTexCoord2f(0, 1);
+		glTexCoord2f(u, v + texSize);
 		glVertex3f(x, y, z);
 		
 		//top face
-		//glColor3f(0, 1, 1);
-		glTexCoord2f(0, 0);
+		glTexCoord2f(u, v);
 		glVertex3f(x, y + size, z);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(u + texSize, v);
 		glVertex3f(x + size, y + size, z);
-		glTexCoord2f(1, 1);
+		glTexCoord2f(u + texSize, v + texSize);
 		glVertex3f(x + size, y + size, z + size);
-		glTexCoord2f(0, 1);
+		glTexCoord2f(u, v + texSize);
 		glVertex3f(x, y + size, z + size);
 		
 		//front face
-		//glColor3f(1, 1, 1);
-		glTexCoord2f(0, 0);
+		glTexCoord2f(u, v);
 		glVertex3f(x, y, z);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(u + texSize, v);
 		glVertex3f(x + size, y, z);
-		glTexCoord2f(1, 1);
+		glTexCoord2f(u + texSize, v + texSize);
 		glVertex3f(x + size, y + size, z);
-		glTexCoord2f(0, 1);
+		glTexCoord2f(u, v + texSize);
 		glVertex3f(x, y + size, z);
 
 		//back face
-		//glColor3f(1, 0, 1);
-		glTexCoord2f(0, 0);
+		glTexCoord2f(u, v);
 		glVertex3f(x, y + size, z + size);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(u + texSize, v);
 		glVertex3f(x + size, y + size, z + size);
-		glTexCoord2f(1, 1);
+		glTexCoord2f(u + texSize, v + texSize);
 		glVertex3f(x + size, y, z + size);
-		glTexCoord2f(0, 1);
+		glTexCoord2f(u, v + texSize);
 		glVertex3f(x, y, z + size);
 		
 		//left face
-		//glColor3f(1, 0, 0);
-		glTexCoord2f(0, 0);
+		glTexCoord2f(u, v);
 		glVertex3f(x + size, y, z);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(u + texSize, v);
 		glVertex3f(x + size, y, z + size);
-		glTexCoord2f(1, 1);
+		glTexCoord2f(u + texSize, v + texSize);
 		glVertex3f(x + size, y + size, z + size);
-		glTexCoord2f(0, 1);
+		glTexCoord2f(u, v + texSize);
 		glVertex3f(x + size, y + size, z);
 
 		//right face
-		//glColor3f(1, 1, 0);
-		glTexCoord2f(0, 0);
+		glTexCoord2f(u, v);
 		glVertex3f(x, y, z + size);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(u + texSize, v);
 		glVertex3f(x, y, z);
-		glTexCoord2f(1, 1);
+		glTexCoord2f(u + texSize, v + texSize);
 		glVertex3f(x, y + size, z);
-		glTexCoord2f(0, 1);
+		glTexCoord2f(u, v + texSize);
 		glVertex3f(x, y + size, z + size);
+
+		glEnd();
+	}
+	
+	public void createWireFrameCube(int x, int y, int z, int size){
+		glBegin(GL_LINES);
 
 		glEnd();
 	}

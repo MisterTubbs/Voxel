@@ -5,6 +5,8 @@ import com.nishu.voxel.utilities.GameObject;
 
 public class Mob extends Entity implements GameObject{
 	
+	private Tile up, down, left, right;
+	
 	private boolean isDead;
 	private Tile[][][] tiles;
 
@@ -23,8 +25,7 @@ public class Mob extends Entity implements GameObject{
 		setDead(false);
 	}
 
-	@Override
-	public void update() {
+	public void update(Tile[][][] tiles) {
 	}
 
 	@Override
@@ -41,6 +42,50 @@ public class Mob extends Entity implements GameObject{
 
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
+	}
+
+	public Tile getUp() {
+		return up;
+	}
+
+	public void setUp(Tile up) {
+		this.up = up;
+	}
+
+	public Tile getDown() {
+		return down;
+	}
+
+	public void setDown(Tile down) {
+		this.down = down;
+	}
+
+	public Tile getLeft() {
+		return left;
+	}
+
+	public void setLeft(Tile left) {
+		this.left = left;
+	}
+
+	public Tile getRight() {
+		return right;
+	}
+
+	public void setRight(Tile right) {
+		this.right = right;
+	}
+
+	public Tile[][][] getTiles() {
+		return tiles;
+	}
+
+	public void setTiles(Tile[][][] tiles) {
+		this.tiles = tiles;
+	}
+
+	@Override
+	public void update() {
 	}
 
 }

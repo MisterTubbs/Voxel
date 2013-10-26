@@ -20,6 +20,7 @@ import org.lwjgl.opengl.Display;
 
 import com.nishu.voxel.entity.MobManager;
 import com.nishu.voxel.geom.chunks.ChunkManager;
+import com.nishu.voxel.graphics.Spritesheet;
 import com.nishu.voxel.utilities.GameObject;
 
 public class Game implements GameObject {
@@ -27,6 +28,7 @@ public class Game implements GameObject {
 	private int width, height;
 	private MobManager mobManager;
 	private ChunkManager chunkManager;
+	private Spritesheet spritesheet;
 
 	public Game(int width, int height) {
 		this.width = width;
@@ -49,14 +51,15 @@ public class Game implements GameObject {
 
 	@Override
 	public void init() {
+		spritesheet = new Spritesheet("spritesheets/tiles.png");
 		mobManager = new MobManager(0, 0, 0, 0, 0);
-		chunkManager = new ChunkManager(mobManager);
+		chunkManager = new ChunkManager(spritesheet);
 	}
 
 	@Override
 	public void update() {
-		mobManager.update();
 		chunkManager.update();
+		mobManager.update();
 	}
 
 	@Override

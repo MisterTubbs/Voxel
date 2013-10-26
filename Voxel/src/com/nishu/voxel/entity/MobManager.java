@@ -2,6 +2,9 @@ package com.nishu.voxel.entity;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.vector.Vector3f;
+
+import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.utilities.GameObject;
 
 public class MobManager implements GameObject {
@@ -18,14 +21,13 @@ public class MobManager implements GameObject {
 		p = new Player(x, y, z);
 	}
 
-	@Override
-	public void update() {
-		p.update();
+	public void update(Tile[][][] tiles) {
+		p.update(tiles);
 		for (int i = 0; i < mobs.size(); i++) {
 			if (mobs.get(i).isDead()) {
 				killMob(mobs.get(i));
 			} else {
-				mobs.get(i).update();
+				mobs.get(i).update(tiles);
 			}
 		}
 	}
@@ -80,6 +82,11 @@ public class MobManager implements GameObject {
 
 	@Override
 	public void init() {
+	}
+
+	@Override
+	public void update() {
+		p.update();
 	}
 
 }
