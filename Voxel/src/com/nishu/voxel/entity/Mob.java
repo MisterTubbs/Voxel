@@ -1,22 +1,26 @@
 package com.nishu.voxel.entity;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.utilities.GameObject;
 
 public class Mob extends Entity implements GameObject{
 	
-	private Tile up, down, left, right;
-	
+	private Tile forward, back, up, down, left, right;
+	private Vector3f newPosition;
 	private boolean isDead;
 	private Tile[][][] tiles;
 
 	public Mob(float x, float y, float z) {
 		super(x, y, z, 0, 0);
+		this.newPosition = new Vector3f(x, y, z);
 		init();
 	}
 	
 	public Mob(float x, float y, float z, float rotx, float roty) {
 		super(x, y, z, rotx, roty);
+		this.newPosition = new Vector3f(x, y, z);
 		init();
 	}
 
@@ -25,7 +29,8 @@ public class Mob extends Entity implements GameObject{
 		setDead(false);
 	}
 
-	public void update(Tile[][][] tiles) {
+	@Override
+	public void update() {
 	}
 
 	@Override
@@ -76,6 +81,22 @@ public class Mob extends Entity implements GameObject{
 		this.right = right;
 	}
 
+	public Tile getForward() {
+		return forward;
+	}
+
+	public void setForward(Tile forward) {
+		this.forward = forward;
+	}
+
+	public Tile getBack() {
+		return back;
+	}
+
+	public void setBack(Tile back) {
+		this.back = back;
+	}
+
 	public Tile[][][] getTiles() {
 		return tiles;
 	}
@@ -84,8 +105,11 @@ public class Mob extends Entity implements GameObject{
 		this.tiles = tiles;
 	}
 
-	@Override
-	public void update() {
+	public Vector3f getNewPosition() {
+		return newPosition;
 	}
 
+	public void setNewPosition(Vector3f newPosition) {
+		this.newPosition = newPosition;
+	}
 }

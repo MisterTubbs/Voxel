@@ -11,10 +11,13 @@ public abstract class Tile {
 	AABB box;
 	
 	public static final Tile Grass = new TileGrass(); 
+	public static final Tile Stone = new TileStone();
 	public static final Tile Void = new TileVoid(); 
+	public static final Tile Air = new TileAir();
 
 	public Tile(){
 		shape = new Shape();
+		box = new AABB(1, 1, 1);
 	}
 	
 	public void update() {

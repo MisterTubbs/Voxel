@@ -1,17 +1,17 @@
 package com.nishu.voxel.geom.tiles;
 
-public class TileGrass extends Tile {
-
-	public TileGrass() {
+public class TileAir extends Tile{
+	
+	public TileAir(){
 	}
 
 	@Override
 	public String getType() {
-		return "Grass";
+		return null;
 	}
-
+	
 	public boolean isTransparent() {
-		return false;
+		return true;
 	}
 
 }

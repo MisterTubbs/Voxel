@@ -2,30 +2,33 @@ package com.nishu.voxel.entity;
 
 import java.util.ArrayList;
 
+import com.nishu.voxel.geom.chunks.ChunkManager;
 import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.utilities.GameObject;
 
 public class MobManager implements GameObject {
 
 	private ArrayList<Mob> mobs;
+	private ChunkManager chunkManager;
 	private Player p;
 
-	public MobManager(float x, float y, float z, float rotx, float roty) {
+	public MobManager(ChunkManager chunkManager, float x, float y, float z, float rotx, float roty) {
+		this.chunkManager = chunkManager;
 		init(x, y, z, rotx, roty);
 	}
 
 	public void init(float x, float y, float z, float rotx, float roty) {
 		mobs = new ArrayList<Mob>();
-		p = new Player(x, y, z);
+		p = new Player(chunkManager, x, y, z);
 	}
 
 	public void update(Tile[][][] tiles) {
-		p.update(tiles);
+		p.update();
 		for (int i = 0; i < mobs.size(); i++) {
 			if (mobs.get(i).isDead()) {
 				killMob(mobs.get(i));
 			} else {
-				mobs.get(i).update(tiles);
+				mobs.get(i).update();
 			}
 		}
 	}

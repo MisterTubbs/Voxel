@@ -3,22 +3,28 @@ package com.nishu.voxel.entity;
 import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
+import java.nio.FloatBuffer;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.nishu.voxel.geom.Shape;
+import com.nishu.voxel.geom.chunks.ChunkManager;
 import com.nishu.voxel.math.AABB;
 
 public class Player extends Mob {
 
 	AABB box;
 	Shape cube;
+	ChunkManager chunkManager;
 	float yrotrad, xrotrad, mouseDX, mouseDY, mouseX, mouseY, lookSpeed = 0.090f, strafeSpeed = 0.15f;
+	FloatBuffer ambient, diffuse, position;
 
-	public Player(float x, float y, float z) {
+	public Player(ChunkManager chunkManager, float x, float y, float z) {
 		super(x, y, z);
+		this.chunkManager = chunkManager;
 		init();
 	}
 
@@ -34,7 +40,7 @@ public class Player extends Mob {
 
 	public void update() {
 		box.update(this.getPosition());
-
+		
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			System.exit(0);
 		}

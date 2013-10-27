@@ -3,7 +3,6 @@ package com.nishu.voxel.geom.tiles;
 public class TileVoid extends Tile {
 
 	public TileVoid() {
-		super();
 	}
 
 	@Override

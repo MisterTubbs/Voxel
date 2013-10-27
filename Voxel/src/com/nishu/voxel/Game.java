@@ -48,13 +48,16 @@ public class Game implements GameObject {
 		glHint(GL_FOG_HINT, GL_DONT_CARE);
 		glFogf(GL_FOG_START, 30f);
 		glFogf(GL_FOG_END, 100f);
+		
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		glShadeModel(GL_SMOOTH);
 	}
 
 	@Override
 	public void init() {
 		spritesheet = new Spritesheet("spritesheets/tiles.png");
-		mobManager = new MobManager(0, 0, 0, 0, 0);
 		chunkManager = new ChunkManager(spritesheet);
+		mobManager = new MobManager(chunkManager, 0, 0, 0, 0, 0);
 	}
 
 	@Override

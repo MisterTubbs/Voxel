@@ -15,10 +15,10 @@ public class ChunkManager implements GameObject {
 
 	@Override
 	public void init() {
-		chunks = new Chunk[1];
+		chunks = new Chunk[50];
 
 		for (int i = 0; i < chunks.length; i++) {
-			chunks[i] = new Chunk(spritesheet, i, i, i);
+			chunks[i] = new Chunk(spritesheet, i + 16, 0, i + 16);
 		}
 	}
 
@@ -35,5 +35,26 @@ public class ChunkManager implements GameObject {
 
 	@Override
 	public void dispose() {
+	}
+	
+	public void rebuildChunk(){
+		chunks[0].rebuild();
+	}
+	
+	public Chunk lookUpChunk(float x, float y, float z){
+		for(int i = 0; i < chunks.length; i++){
+			if(x > chunks[i].getMinChunkSize().x && x < chunks[i].getMaxChunkSize().x && y > chunks[i].getMinChunkSize().y && y < chunks[i].getMaxChunkSize().y && z > chunks[i].getMinChunkSize().z && z < chunks[i].getMaxChunkSize().z){
+				return chunks[i];
+			}
+		}
+		return null;
+	}
+
+	public Chunk[] getChunks() {
+		return chunks;
+	}
+
+	public void setChunks(Chunk[] chunks) {
+		this.chunks = chunks;
 	}
 }
