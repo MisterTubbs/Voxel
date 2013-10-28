@@ -4,14 +4,14 @@ public class TileAir extends Tile{
 	
 	public TileAir(){
 	}
-
-	@Override
-	public String getType() {
-		return null;
-	}
 	
 	public boolean isTransparent() {
 		return true;
+	}
+
+	@Override
+	public byte getID() {
+		return 1;
 	}
 
 }

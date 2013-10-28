@@ -57,7 +57,7 @@ public class Game implements GameObject {
 	public void init() {
 		spritesheet = new Spritesheet("spritesheets/tiles.png");
 		chunkManager = new ChunkManager(spritesheet);
-		mobManager = new MobManager(chunkManager, 0, 0, 0, 0, 0);
+		mobManager = new MobManager(chunkManager, -160 / 2, -34, -160 / 2, 0, 0);
 	}
 
 	@Override

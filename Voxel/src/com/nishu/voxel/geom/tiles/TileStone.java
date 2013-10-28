@@ -3,16 +3,15 @@ package com.nishu.voxel.geom.tiles;
 public class TileStone extends Tile{
 	
 	public TileStone(){
-		
+	}
+
+	public boolean isTransparent(){
+		return false;
 	}
 
 	@Override
-	public String getType() {
-		return "Stone";
-	}
-	
-	public boolean isTransparent(){
-		return false;
+	public byte getID() {
+		return 3;
 	}
 
 }

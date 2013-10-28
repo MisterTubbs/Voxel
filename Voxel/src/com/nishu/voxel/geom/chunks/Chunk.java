@@ -17,26 +17,20 @@ import org.lwjgl.util.vector.Vector3f;
 
 import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.graphics.Spritesheet;
-import com.nishu.voxel.math.noise.SimplexNoise;
 import com.nishu.voxel.utilities.GameObject;
 
 public class Chunk implements GameObject {
 
-	private int sx, sy, sz, lx, ly, lz, opaqueID, transID;
-	private Tile[][][] tiles;
-	private Tile[][][] transparent;
-	private Tile[][][] temp;
+	private int opaqueID;
+	private Vector3f sPosition, lPosition;
+	private byte[][][] tiles;
 	private Spritesheet spritesheet;
 
 	Random rand;
 
-	public Chunk(Spritesheet spritesheet, int sx, int sy, int sz) {
-		this.sx = sx;
-		this.sy = sy;
-		this.sz = sz;
-		this.lx = sx + 16;
-		this.ly = sy + 16;
-		this.lz = sz + 16;
+	public Chunk(Spritesheet spritesheet, Vector3f sPosition) {
+		this.sPosition = sPosition;
+		this.lPosition = new Vector3f(sPosition.x + 16, sPosition.y + 16, sPosition.z + 16);
 
 		this.spritesheet = spritesheet;
 
@@ -47,13 +41,9 @@ public class Chunk implements GameObject {
 	public void init() {
 		rand = new Random();
 
-		this.tiles = new Tile[lx][ly][lz];
-		this.transparent = new Tile[lx][ly][lz];
-
-		temp = new Tile[lx][ly][lz];
-
 		opaqueID = glGenLists(1);
-		transID = glGenLists(2);
+
+		tiles = new byte[(int) lPosition.x][(int) lPosition.y][(int) lPosition.z];
 
 		genRandomWorld();
 
@@ -66,17 +56,18 @@ public class Chunk implements GameObject {
 		 * tiles[x][y][z].setBox(x, y, z); temp[x][y][z] = tiles[x][y][z]; } } }
 		 * }
 		 */
-		rebuild(temp);
+		rebuild();
 	}
 
 	public void genRandomWorld() {
-		for (int x = sx; x < lx; x++) {
-			for (int y = sy; y < ly; y++) {
-				for (int z = sz; z < lz; z++) {
-					double h = SimplexNoise.noise(x / 20, 0) * 16;
-					if (y + h < ly && y + h > sy) {
-						tiles[x][(int) ((int) y + h)][z] = Tile.Grass;
-						temp[x][(int) ((int) y + h)][z] = Tile.Grass;
+		for (int x = (int) sPosition.x; x < (int) lPosition.x; x++) {
+			for (int y = (int) sPosition.y; y < (int) lPosition.y; y++) {
+				for (int z = (int) sPosition.z; z < (int) lPosition.z; z++) {
+					// add tiles to array
+					if (rand.nextInt(10) == 0) {
+						tiles[x][y][z] = Tile.Stone.getID();
+					} else {
+						tiles[x][y][z] = Tile.Grass.getID();
 					}
 				}
 			}
@@ -84,22 +75,14 @@ public class Chunk implements GameObject {
 	}
 
 	public void rebuild() {
-		rebuild(temp);
-	}
-
-	public void rebuild(Tile[][][] temp) {
 		glNewList(opaqueID, GL_COMPILE);
-		for (int x = sx; x < lx; x++) {
-			for (int y = sy; y < ly; y++) {
-				for (int z = sz; z < lz; z++) {
-					if (temp[x][y][z] != null) {
-						if (checkCube(x, y, z, temp)) {
-							if (temp[x][y][z].isTransparent())
-								transparent[x][y][z].getVertices(x, y, z, 1, spritesheet.getTextureCoordsX(transparent[x][y][z].getType()), spritesheet.getTextureCoordsY((transparent[x][y][z].getType())));
-							else
-								tiles[x][y][z].getVertices(x, y, z, 1, spritesheet.getTextureCoordsX(tiles[x][y][z].getType()), spritesheet.getTextureCoordsY((tiles[x][y][z].getType())));
-						}
-					}
+		for (int x = (int) sPosition.x; x < (int) lPosition.x; x++) {
+			for (int y = (int) sPosition.y; y < (int) lPosition.y; y++) {
+				for (int z = (int) sPosition.z; z < (int) lPosition.z; z++) {
+					if (checkCubeHidden(x, y, z))
+						// check if tiles hidden. if not, add vertices to
+						// display list
+						Tile.getTile(tiles[x][y][z]).getVertices(x, y, z, 1, spritesheet.getTextureCoordsX(tiles[x][y][z]), spritesheet.getTextureCoordsY(tiles[x][y][z]));
 				}
 			}
 		}
@@ -107,11 +90,11 @@ public class Chunk implements GameObject {
 		spritesheet.bind();
 	}
 
-	private boolean checkCube(int x, int y, int z, Tile[][][] temp) {
+	private boolean checkCubeHidden(int x, int y, int z) {
 		// boolean array for faces. true is hidden false is not
 		boolean faces[] = new boolean[6];
-		if (x > sx) {
-			if (temp[x - 1][y][z] instanceof Tile && !temp[x - 1][y][z].isTransparent()) {
+		if (x > sPosition.x) {
+			if (tiles[x - 1][y][z] < 4) {
 				faces[0] = true;
 			} else {
 				faces[0] = false;
@@ -119,8 +102,8 @@ public class Chunk implements GameObject {
 		} else {
 			faces[0] = false;
 		}
-		if (x < lx - 1) {
-			if (temp[x + 1][y][z] instanceof Tile && !temp[x + 1][y][z].isTransparent()) {
+		if (x < lPosition.x - 1) {
+			if (tiles[x + 1][y][z] < 4) {
 				faces[1] = true;
 			} else {
 				faces[1] = false;
@@ -129,8 +112,8 @@ public class Chunk implements GameObject {
 			faces[1] = false;
 		}
 
-		if (y > sy) {
-			if (temp[x][y - 1][z] instanceof Tile && !temp[x][y - 1][z].isTransparent()) {
+		if (y > sPosition.y) {
+			if (tiles[x][y - 1][z] < 4) {
 				faces[2] = true;
 			} else {
 				faces[2] = false;
@@ -138,8 +121,8 @@ public class Chunk implements GameObject {
 		} else {
 			faces[2] = false;
 		}
-		if (y < ly - 1) {
-			if (temp[x][y + 1][z] instanceof Tile && !temp[x][y + 1][z].isTransparent()) {
+		if (y < lPosition.y - 1) {
+			if (tiles[x][y + 1][z] < 4) {
 				faces[3] = true;
 			} else {
 				faces[3] = false;
@@ -148,8 +131,8 @@ public class Chunk implements GameObject {
 			faces[3] = false;
 		}
 
-		if (z > sz) {
-			if (temp[x][y][z - 1] instanceof Tile && !temp[x][y][z - 1].isTransparent()) {
+		if (z > sPosition.z) {
+			if (tiles[x][y][z - 1] < 4) {
 				faces[4] = true;
 			} else {
 				faces[4] = false;
@@ -157,8 +140,8 @@ public class Chunk implements GameObject {
 		} else {
 			faces[4] = false;
 		}
-		if (z < lz - 1) {
-			if (temp[x][y][z + 1] instanceof Tile && !temp[x][y][z + 1].isTransparent()) {
+		if (z < lPosition.z - 1) {
+			if (tiles[x][y][z + 1] < 4) {
 				faces[5] = true;
 			} else {
 				faces[5] = false;
@@ -181,12 +164,9 @@ public class Chunk implements GameObject {
 	@Override
 	public void render() {
 		if (tiles.length != -1) {
-			glCallList(opaqueID);
-		}
-		if (transparent.length != -1) {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glCallList(transID);
+			glCallList(opaqueID);
 		}
 	}
 
@@ -194,29 +174,29 @@ public class Chunk implements GameObject {
 	public void dispose() {
 	}
 
-	public Tile[][][] getTiles() {
+	public byte[][][] getTiles() {
 		return tiles;
 	}
 
-	public Tile getTile(int x, int y, int z) {
-		if (x > sx && x < lx && y > sy && y < ly && z > sz && z < lz) {
+	public byte getTile(int x, int y, int z) {
+		if (x > sPosition.x && x < lPosition.x && y > sPosition.y && y < lPosition.y && z > sPosition.z && z < lPosition.z) {
 			System.out.println(x + " , " + y + " , " + z);
 			return tiles[x][y][z];
 		}
-		return null;
+		return -1;
 	}
 
-	public void setTile(int x, int y, int z, Tile t) {
-		if (x > sx && x < lx && y > sy && y < ly && z > sz && z < lz) {
+	public void setTile(int x, int y, int z, byte t) {
+		if (x > sPosition.x && x < lPosition.x && y > sPosition.y && y < lPosition.y && z > sPosition.z && z < lPosition.z) {
 			tiles[x][y][z] = t;
 		}
 	}
 
 	public Vector3f getMinChunkSize() {
-		return new Vector3f(sx, sy, sz);
+		return sPosition;
 	}
 
 	public Vector3f getMaxChunkSize() {
-		return new Vector3f(lx, ly, lz);
+		return lPosition;
 	}
 }

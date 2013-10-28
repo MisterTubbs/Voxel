@@ -14,6 +14,7 @@ public abstract class Tile {
 	public static final Tile Stone = new TileStone();
 	public static final Tile Void = new TileVoid(); 
 	public static final Tile Air = new TileAir();
+	public static final Tile Water = new TileWater();
 
 	public Tile(){
 		shape = new Shape();
@@ -26,8 +27,30 @@ public abstract class Tile {
 	public void dispose() {
 	}
 	
+	public abstract byte getID();
+	
+	public static Tile getTile(byte id){
+		switch(id){
+		case 0:
+			return Tile.Void;
+		case 1:
+			return Tile.Air;
+		case 2:
+			return Tile.Grass;
+		case 3:
+			return Tile.Stone;
+		case 4:
+			return Tile.Water;
+		}
+		return Tile.Void;
+	}
+	
 	public void getVertices(float x, float y, float z, float size, float u, float v){
 		shape.createCube(x, y, z, size, u, v);
+	}
+	
+	public void getVertices(float x, float y, float z, float size){
+		shape.createCube(x, y, z, size);
 	}
 
 	public AABB getBox() {
@@ -46,7 +69,4 @@ public abstract class Tile {
 	public boolean isTransparent(){
 		return false;
 	}
-	
-	public abstract String getType();
-
 }

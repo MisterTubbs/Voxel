@@ -8,29 +8,29 @@ public class Spritesheet {
 		this.sheet = Texture.loadTexture(sheet);
 	}
 	
-	public float getTextureCoordsX(String texture){
-		switch(texture){
-		case "Void":
+	public float getTextureCoordsX(byte id){
+		switch(id){
+		case 0:
 			return 0;
-		case "Grass":
+		case 2:
 			return 0.125f;
-		case "Water":
+		case 4:
 			return 0.25f;
-		case "Stone":
+		case 3:
 			return 0.375f;
 		}
 		return 0;		
 	}
 	
-	public float getTextureCoordsY(String texture){
-		switch(texture){
-		case "Void":
+	public float getTextureCoordsY(byte id){
+		switch(id){
+		case 0:
 			return 0;
-		case "Grass":
+		case 2:
 			return 0;
-		case "Water":
+		case 4:
 			return 0;
-		case "Stone":
+		case 3:
 			return 0;
 		}
 		return 0;		

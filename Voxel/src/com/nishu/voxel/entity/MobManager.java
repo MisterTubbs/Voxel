@@ -88,6 +88,7 @@ public class MobManager implements GameObject {
 	@Override
 	public void update() {
 		p.update();
+		System.out.println(p.getPosition());
 	}
 
 }

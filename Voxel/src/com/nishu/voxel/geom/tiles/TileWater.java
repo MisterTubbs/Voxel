@@ -5,14 +5,14 @@ public class TileWater extends Tile{
 	public TileWater() {
 		super();
 	}
-	
-	@Override
-	public String getType() {
-		return "Water";
-	}
-	
+
 	public boolean isTransparent(){
 		return true;
+	}
+
+	@Override
+	public byte getID() {
+		return 4;
 	}
 
 }
