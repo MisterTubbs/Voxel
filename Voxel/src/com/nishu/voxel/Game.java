@@ -44,13 +44,10 @@ public class Game implements GameObject {
 		glEnable(GL_FOG);
 		glFogi(GL_FOG_MODE, GL_LINEAR);
 		glFog(GL_FOG_COLOR, fog);
-		glFogf(GL_FOG_DENSITY, 0.15f);
+		glFogf(GL_FOG_DENSITY, 75f);
 		glHint(GL_FOG_HINT, GL_DONT_CARE);
-		glFogf(GL_FOG_START, 30f);
-		glFogf(GL_FOG_END, 100f);
-		
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-		glShadeModel(GL_SMOOTH);
+		glFogf(GL_FOG_START, 22f);
+		glFogf(GL_FOG_END, 26f);
 	}
 
 	@Override
@@ -58,6 +55,7 @@ public class Game implements GameObject {
 		spritesheet = new Spritesheet("spritesheets/tiles.png");
 		chunkManager = new ChunkManager(spritesheet);
 		mobManager = new MobManager(chunkManager, -160 / 2, -34, -160 / 2, 0, 0);
+		chunkManager.setMobManager(mobManager);
 	}
 
 	@Override

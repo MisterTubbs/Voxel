@@ -11,15 +11,17 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.nishu.voxel.geom.Shape;
+import com.nishu.voxel.geom.chunks.Chunk;
 import com.nishu.voxel.geom.chunks.ChunkManager;
 import com.nishu.voxel.math.AABB;
+import com.nishu.voxel.utilities.Time;
 
 public class Player extends Mob {
 
 	AABB box;
 	Shape cube;
 	ChunkManager chunkManager;
-	float yrotrad, xrotrad, mouseDX, mouseDY, mouseX, mouseY, lookSpeed = 0.090f, strafeSpeed = 0.15f;
+	float yrotrad, xrotrad, mouseDX, mouseDY, mouseX, mouseY, lookSpeed = 0.090f, strafeSpeed = 8f;
 	FloatBuffer ambient, diffuse, position;
 
 	public Player(ChunkManager chunkManager, float x, float y, float z) {
@@ -41,38 +43,64 @@ public class Player extends Mob {
 	public void update() {
 		box.update(this.getPosition());
 		
+		
+		if(Mouse.isButtonDown(0)){
+			Chunk c = chunkManager.lookupChunk(new Vector3f((float) cube.getSx(), (float) cube.getSy(), (float) cube.getSz()));
+			if(c != null){
+				if(c.getType() == 0) {
+					c.setType(1);
+				}
+				c.setTile((float) cube.getSx(), (float) cube.getSy(), (float) cube.getSz(), (byte) 3);
+				c.rebuild();
+			}
+		}
+		
+		if(Mouse.isButtonDown(1)){
+			Chunk c = chunkManager.lookupChunk(new Vector3f((float) cube.getSx(), (float) cube.getSy(), (float) cube.getSz()));
+			if(c != null){
+				c.setTile((float) cube.getSx(), (float) cube.getSy(), (float) cube.getSz(), (byte) 1);
+				c.rebuild();
+			}
+		}
+		
 		if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
 			System.exit(0);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			yrotrad = (this.getRotation().y / 180 * 3.141592654f);
-			this.getPosition().set(new Vector3f(this.getPosition().x -= (float) (Math.cos(yrotrad)) * strafeSpeed, this.getPosition().getY(), this.getPosition().z -= (float) (Math.sin(yrotrad)) * strafeSpeed));
+			this.getPosition().set(this.getPosition().x -= ((float) (Math.cos(yrotrad)) * strafeSpeed) * Time.getDelta(), this.getPosition().getY(), this.getPosition().z -= (float) ((Math.sin(yrotrad)) * strafeSpeed) * Time.getDelta());
+			this.setHasMoved(true);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 			yrotrad = (this.getRotation().y / 180 * 3.141592654f);
-			this.getPosition().set(new Vector3f(this.getPosition().x += (float) (Math.cos(yrotrad)) * strafeSpeed, this.getPosition().getY(), this.getPosition().z += (float) (Math.sin(yrotrad)) * strafeSpeed));
+			this.getPosition().set(this.getPosition().x += (float) ((Math.cos(yrotrad)) * strafeSpeed) * Time.getDelta(), this.getPosition().getY(), this.getPosition().z += (float) ((Math.sin(yrotrad)) * strafeSpeed) * Time.getDelta());
+			this.setHasMoved(true);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			yrotrad = (this.getRotation().y / 180 * 3.141592654f);
 			xrotrad = (this.getRotation().x / 180 * 3.141592654f);
-			this.getPosition().set(new Vector3f(this.getPosition().x += (float) (Math.sin(yrotrad)) * strafeSpeed, (this.getPosition().y) -= (float) (Math.sin(xrotrad)) * strafeSpeed, this.getPosition().z -= (Math.cos(yrotrad) * strafeSpeed)));
+			this.getPosition().set(this.getPosition().x += (float) ((Math.sin(yrotrad)) * strafeSpeed) * Time.getDelta(), (this.getPosition().y) -= (float) ((Math.sin(xrotrad)) * strafeSpeed) * Time.getDelta(), this.getPosition().z -= (Math.cos(yrotrad) * strafeSpeed) * Time.getDelta());
+			this.setHasMoved(true);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			yrotrad = (this.getRotation().y / 180 * 3.141592654f);
 			xrotrad = (this.getRotation().x / 180 * 3.141592654f);
-			this.getPosition().set(this.getPosition().x -= (float) (Math.sin(yrotrad)) * strafeSpeed, this.getPosition().y += (float) (Math.sin(xrotrad)) * strafeSpeed, this.getPosition().z += (Math.cos(yrotrad) * strafeSpeed));
+			this.getPosition().set(this.getPosition().x -= (float) ((Math.sin(yrotrad)) * strafeSpeed) * Time.getDelta(), this.getPosition().y += (float) ((Math.sin(xrotrad)) * strafeSpeed) * Time.getDelta(), this.getPosition().z += (Math.cos(yrotrad) * strafeSpeed) * Time.getDelta());
+			this.setHasMoved(true);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			this.getPosition().setY(this.getPosition().y -= strafeSpeed);
+			this.getPosition().setY(this.getPosition().y -= strafeSpeed * Time.getDelta());
+			this.setHasMoved(true);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-			this.getPosition().setY(this.getPosition().y += strafeSpeed);
+			this.getPosition().setY(this.getPosition().y += strafeSpeed * Time.getDelta());
+			this.setHasMoved(true);
 		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
@@ -101,10 +129,14 @@ public class Player extends Mob {
 			this.getRotation().setX(-45);
 		if (this.getRotation().x > 90)
 			this.getRotation().setX(90);
+		
+		cube.createWireFrameCube(-this.getPosition().x + (4 * Math.cos(this.getRotation().x * (Math.PI / 180)) * Math.sin(this.getRotation().y * (Math.PI / 180))), -this.getPosition().y + (4 * Math.sin(this.getRotation().x * (Math.PI / 180)) * Math.sin(this.getRotation().y * (Math.PI / 180))), -this.getPosition().z + (4 * Math.cos(this.getRotation().y * (Math.PI / 180))), 1);
 
 		glRotatef(this.getRotation().x, 1, 0, 0);
 		glRotatef(this.getRotation().y, 0, 1, 0);
 		glTranslatef(this.getPosition().x, this.getPosition().y, this.getPosition().z);
+		
+		//setHasMoved(false);
 	}
 
 	public void dipose() {

@@ -1,15 +1,6 @@
 package com.nishu.voxel.geom.chunks;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COMPILE;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glCallList;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEndList;
-import static org.lwjgl.opengl.GL11.glGenLists;
-import static org.lwjgl.opengl.GL11.glNewList;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.Random;
 
@@ -21,16 +12,17 @@ import com.nishu.voxel.utilities.GameObject;
 
 public class Chunk implements GameObject {
 
-	private int opaqueID;
+	private int opaqueID, type;
 	private Vector3f sPosition, lPosition;
 	private byte[][][] tiles;
 	private Spritesheet spritesheet;
 
 	Random rand;
 
-	public Chunk(Spritesheet spritesheet, Vector3f sPosition) {
+	public Chunk(Spritesheet spritesheet, Vector3f sPosition, int type) {
 		this.sPosition = sPosition;
 		this.lPosition = new Vector3f(sPosition.x + 16, sPosition.y + 16, sPosition.z + 16);
+		this.type = type;
 
 		this.spritesheet = spritesheet;
 
@@ -46,16 +38,6 @@ public class Chunk implements GameObject {
 		tiles = new byte[(int) lPosition.x][(int) lPosition.y][(int) lPosition.z];
 
 		genRandomWorld();
-
-		/*
-		 * for (int x = sx; x < lx; x++) { for (int y = sy; y < ly; y++) { for
-		 * (int z = sz; z < lz; z++) { if (rand.nextInt(10) == 0) {
-		 * transparent[x][y][z] = new TileWater(); //
-		 * transparent[x][y][z].setBox(x, y, z); temp[x][y][z] =
-		 * transparent[x][y][z]; } else { tiles[x][y][z] = new TileGrass(); //
-		 * tiles[x][y][z].setBox(x, y, z); temp[x][y][z] = tiles[x][y][z]; } } }
-		 * }
-		 */
 		rebuild();
 	}
 
@@ -63,11 +45,17 @@ public class Chunk implements GameObject {
 		for (int x = (int) sPosition.x; x < (int) lPosition.x; x++) {
 			for (int y = (int) sPosition.y; y < (int) lPosition.y; y++) {
 				for (int z = (int) sPosition.z; z < (int) lPosition.z; z++) {
-					// add tiles to array
-					if (rand.nextInt(10) == 0) {
-						tiles[x][y][z] = Tile.Stone.getID();
-					} else {
+					if (type != 0) {
 						tiles[x][y][z] = Tile.Grass.getID();
+						if (y == 0) {
+							tiles[x][y][z] = Tile.Water.getID();
+						}
+						if (y <= 8 && y > 1) {
+							tiles[x][y][z] = Tile.Stone.getID();
+						}
+						if (x == lPosition.x || z == lPosition.z || x == sPosition.x || z == sPosition.z) {
+							tiles[x][y][z] = Tile.Stone.getID();
+						}
 					}
 				}
 			}
@@ -76,16 +64,25 @@ public class Chunk implements GameObject {
 
 	public void rebuild() {
 		glNewList(opaqueID, GL_COMPILE);
+		glBegin(GL_QUADS);
 		for (int x = (int) sPosition.x; x < (int) lPosition.x; x++) {
 			for (int y = (int) sPosition.y; y < (int) lPosition.y; y++) {
 				for (int z = (int) sPosition.z; z < (int) lPosition.z; z++) {
 					if (checkCubeHidden(x, y, z))
 						// check if tiles hidden. if not, add vertices to
 						// display list
-						Tile.getTile(tiles[x][y][z]).getVertices(x, y, z, 1, spritesheet.getTextureCoordsX(tiles[x][y][z]), spritesheet.getTextureCoordsY(tiles[x][y][z]));
+						if (type != 0) {
+							if(type == 3){
+								System.out.println("true");
+							}
+							Tile.getTile(tiles[x][y][z]).getVertices(x, y, z, 1, spritesheet.getTextureCoordsX(tiles[x][y][z]), spritesheet.getTextureCoordsY(tiles[x][y][z]));
+						} else {
+							Tile.getTile(tiles[x][y][z]).getVertices(x, y, z, 1);
+						}
 				}
 			}
 		}
+		glEnd();
 		glEndList();
 		spritesheet.bind();
 	}
@@ -94,7 +91,7 @@ public class Chunk implements GameObject {
 		// boolean array for faces. true is hidden false is not
 		boolean faces[] = new boolean[6];
 		if (x > sPosition.x) {
-			if (tiles[x - 1][y][z] < 4) {
+			if (tiles[x - 1][y][z] != 0) {
 				faces[0] = true;
 			} else {
 				faces[0] = false;
@@ -103,7 +100,7 @@ public class Chunk implements GameObject {
 			faces[0] = false;
 		}
 		if (x < lPosition.x - 1) {
-			if (tiles[x + 1][y][z] < 4) {
+			if (tiles[x + 1][y][z] != 0) {
 				faces[1] = true;
 			} else {
 				faces[1] = false;
@@ -113,7 +110,7 @@ public class Chunk implements GameObject {
 		}
 
 		if (y > sPosition.y) {
-			if (tiles[x][y - 1][z] < 4) {
+			if (tiles[x][y - 1][z] != 0) {
 				faces[2] = true;
 			} else {
 				faces[2] = false;
@@ -122,7 +119,7 @@ public class Chunk implements GameObject {
 			faces[2] = false;
 		}
 		if (y < lPosition.y - 1) {
-			if (tiles[x][y + 1][z] < 4) {
+			if (tiles[x][y + 1][z] != 0) {
 				faces[3] = true;
 			} else {
 				faces[3] = false;
@@ -132,7 +129,7 @@ public class Chunk implements GameObject {
 		}
 
 		if (z > sPosition.z) {
-			if (tiles[x][y][z - 1] < 4) {
+			if (tiles[x][y][z - 1] != 0) {
 				faces[4] = true;
 			} else {
 				faces[4] = false;
@@ -141,7 +138,7 @@ public class Chunk implements GameObject {
 			faces[4] = false;
 		}
 		if (z < lPosition.z - 1) {
-			if (tiles[x][y][z + 1] < 4) {
+			if (tiles[x][y][z + 1] != 0) {
 				faces[5] = true;
 			} else {
 				faces[5] = false;
@@ -180,15 +177,17 @@ public class Chunk implements GameObject {
 
 	public byte getTile(int x, int y, int z) {
 		if (x > sPosition.x && x < lPosition.x && y > sPosition.y && y < lPosition.y && z > sPosition.z && z < lPosition.z) {
-			System.out.println(x + " , " + y + " , " + z);
 			return tiles[x][y][z];
 		}
 		return -1;
 	}
 
-	public void setTile(int x, int y, int z, byte t) {
+	public void setTile(double xx, double yy, double zz, byte i) {
+		int x = (int) xx;
+		int y = (int) yy;
+		int z = (int) zz;
 		if (x > sPosition.x && x < lPosition.x && y > sPosition.y && y < lPosition.y && z > sPosition.z && z < lPosition.z) {
-			tiles[x][y][z] = t;
+			tiles[x][y][z] = Tile.getTile(i).getID();
 		}
 	}
 
@@ -198,5 +197,19 @@ public class Chunk implements GameObject {
 
 	public Vector3f getMaxChunkSize() {
 		return lPosition;
+	}
+
+	public Vector3f getCenterPos() {
+		return new Vector3f(getMaxChunkSize().x - 8, getMaxChunkSize().y - 8, getMaxChunkSize().z - 8);
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		if (type > 1)
+			type = 1;
+		this.type = type;
 	}
 }

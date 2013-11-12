@@ -24,7 +24,6 @@ public class Window {
 	
 	public void update(){
 		Display.update();
-		Display.sync(60);
 	}
 	
 	public void dispose(){

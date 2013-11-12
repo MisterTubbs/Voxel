@@ -42,7 +42,7 @@ public abstract class Tile {
 		case 4:
 			return Tile.Water;
 		}
-		return Tile.Void;
+		return Tile.Air;
 	}
 	
 	public void getVertices(float x, float y, float z, float size, float u, float v){

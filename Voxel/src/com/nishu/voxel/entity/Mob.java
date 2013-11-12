@@ -11,7 +11,8 @@ public class Mob extends Entity implements GameObject{
 	private Vector3f newPosition;
 	private boolean isDead;
 	private Tile[][][] tiles;
-
+	private boolean hasMoved;
+	
 	public Mob(float x, float y, float z) {
 		super(x, y, z, 0, 0);
 		this.newPosition = new Vector3f(x, y, z);
@@ -111,5 +112,13 @@ public class Mob extends Entity implements GameObject{
 
 	public void setNewPosition(Vector3f newPosition) {
 		this.newPosition = newPosition;
+	}
+	
+	public boolean isHasMoved() {
+		return hasMoved;
+	}
+
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
 	}
 }

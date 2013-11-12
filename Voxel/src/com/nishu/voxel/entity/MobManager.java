@@ -2,6 +2,8 @@ package com.nishu.voxel.entity;
 
 import java.util.ArrayList;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import com.nishu.voxel.geom.chunks.ChunkManager;
 import com.nishu.voxel.geom.tiles.Tile;
 import com.nishu.voxel.utilities.GameObject;
@@ -11,6 +13,7 @@ public class MobManager implements GameObject {
 	private ArrayList<Mob> mobs;
 	private ChunkManager chunkManager;
 	private Player p;
+	private int mobID;
 
 	public MobManager(ChunkManager chunkManager, float x, float y, float z, float rotx, float roty) {
 		this.chunkManager = chunkManager;
@@ -20,6 +23,8 @@ public class MobManager implements GameObject {
 	public void init(float x, float y, float z, float rotx, float roty) {
 		mobs = new ArrayList<Mob>();
 		p = new Player(chunkManager, x, y, z);
+		
+		mobID = glGenLists(1);
 	}
 
 	public void update(Tile[][][] tiles) {
@@ -35,6 +40,8 @@ public class MobManager implements GameObject {
 
 	@Override
 	public void render() {
+		glNewList(mobID, GL_COMPILE);
+		glBegin(GL_QUADS);
 		p.render();
 		for (int i = 0; i < mobs.size(); i++) {
 			if (mobs.get(i).isDead()) {
@@ -43,6 +50,10 @@ public class MobManager implements GameObject {
 				mobs.get(i).render();
 			}
 		}
+		glEnd();
+		glEndList();
+		
+		glCallList(mobID);
 	}
 
 	@Override
@@ -88,7 +99,6 @@ public class MobManager implements GameObject {
 	@Override
 	public void update() {
 		p.update();
-		System.out.println(p.getPosition());
 	}
 
 }
